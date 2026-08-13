@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>WELCOME_SURVEY</title>
 
     <link rel="stylesheet" href="style.css">
@@ -11,42 +10,35 @@
 
 <body>
 
-    <!-- Initial screen -->
-    <div id="start-screen">
-        <div id="start-title">WELCOME SURVEY</div>
-        <button id="start-button">BEGIN</button>
-    </div>
+    <div id="crt"></div>
+
+    <main id="screen">
+
+        <!-- BOOT SCREEN -->
+        <section id="boot">
+WELCOME_SURVEY
+
+BEGIN?
+
+<span id="answer"></span><span id="cursor">█</span>
+        </section>
 
 
-    <!-- Terminal -->
-    <div id="terminal-screen">
-
-        <div id="terminal"></div>
-
-        <div id="input-line">
-            <span>></span>
-            <input
-                type="text"
-                id="user-input"
-                maxlength="1"
-                autocomplete="off"
-                autofocus
-            >
-        </div>
-
-    </div>
+        <!-- LOADING SCREEN -->
+        <section id="loading"></section>
 
 
-    <!-- Error popup -->
-    <div id="error-popup">
-        YOU NEVER HAD A CHOICE TO BEGIN WITH.
-    </div>
+        <!-- MAIN SURVEY -->
+        <section id="survey"></section>
+
+    </main>
 
 
-    <!-- Audio -->
-    <audio id="typing-sound" src="sounds/typing.mp3"></audio>
-    <audio id="ambience-sound" src="sounds/ambience.mp3" loop></audio>
-    <audio id="beep-sound" src="sounds/beep.mp3"></audio>
+    <!-- AUDIO -->
+    <!-- Change "audio.mp3" to the name of your audio file. -->
+    <audio id="startupAudio" preload="auto">
+        <source src="audio.mp3" type="audio/mpeg">
+    </audio>
 
 
     <script src="script.js"></script>
