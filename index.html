@@ -1,14 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>WELCOME_SURVEY</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <h1>WELCOME_SURVEY</h1>
+    <div id="terminal"></div>
 
-    <p>Something is waiting.</p>
+    <div id="input-line">
+        <span>></span>
+        <input
+            type="text"
+            id="user-input"
+            maxlength="1"
+            autocomplete="off"
+            autofocus
+        >
+    </div>
+
+    <div id="error-popup">
+        YOU NEVER HAD A CHOICE TO BEGIN WITH.
+    </div>
+
+    <script src="script.js"></script>
 
 </body>
 </html>
