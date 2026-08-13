@@ -1,460 +1,206 @@
-const startScreen = document.getElementById("start-screen");
-const startButton = document.getElementById("start-button");
+/* =========================================
+   ELEMENTS
+   ========================================= */
 
-const terminalScreen = document.getElementById("terminal-screen");
-const terminal = document.getElementById("terminal");
+const boot = document.getElementById("boot");
+const answer = document.getElementById("answer");
+const cursor = document.getElementById("cursor");
 
-const inputLine = document.getElementById("input-line");
-const userInput = document.getElementById("user-input");
+const loading = document.getElementById("loading");
+const survey = document.getElementById("survey");
 
-const errorPopup = document.getElementById("error-popup");
-
-const typingSound = document.getElementById("typing-sound");
-const ambienceSound = document.getElementById("ambience-sound");
-const beepSound = document.getElementById("beep-sound");
+const startupAudio = document.getElementById("startupAudio");
 
 
 /* =========================================
-   BOOT SEQUENCE
+   INPUT
    ========================================= */
 
-const bootSequence = [
+let inputLocked = false;
 
-    {
-        text: "WELCOME_SURVEY v1.0.0.0",
-        delay: 1000
-    },
+document.addEventListener("keydown", function(event) {
 
-    {
-        text: "",
-        delay: 1000
-    },
-
-    {
-        text: "Welcome!",
-        delay: 1000
-    },
-
-    {
-        text: "",
-        delay: 1500
-    },
-
-
-    /* SURVEY ENVIRONMENT */
-
-    {
-        text: "Initializing Survey Environment...",
-        delay: 4000,
-        beep: true
-    },
-
-    {
-        text: "Establishing Secure Connection...",
-        delay: 6000,
-        beep: true
-    },
-
-    {
-        text: "Verifying User Clearance...",
-        delay: 5000,
-        beep: true
-    },
-
-
-    /* MODULES */
-
-    {
-        text: "Loading Survey Modules...",
-        delay: 4500,
-        beep: true
-    },
-
-    {
-        text: "    [MODULE_01] .................. OK",
-        delay: 3000,
-        beep: true
-    },
-
-    {
-        text: "    [MODULE_02] .................. OK",
-        delay: 4000,
-        beep: true
-    },
-
-    {
-        text: "    [MODULE_03] .................. OK",
-        delay: 3500,
-        beep: true
-    },
-
-
-    {
-        text: "",
-        delay: 1500
-    },
-
-
-    /* CONFIGURATION */
-
-    {
-        text: "Retrieving Survey Configuration...",
-        delay: 5000,
-        beep: true
-    },
-
-    {
-        text: "    [CONFIG_A1] .................. OK",
-        delay: 3500,
-        beep: true
-    },
-
-    {
-        text: "    [CONFIG_B7] .................. OK",
-        delay: 4500,
-        beep: true
-    },
-
-    {
-        text: "    [CONFIG_C3] .................. OK",
-        delay: 3000,
-        beep: true
-    },
-
-
-    {
-        text: "",
-        delay: 1500
-    },
-
-
-    /* SYSTEM DIAGNOSTICS */
-
-    {
-        text: "Running System Diagnostics...",
-        delay: 6000,
-        beep: true
-    },
-
-    {
-        text: "    [SYS_CHECK_01] ............... OK",
-        delay: 4000,
-        beep: true
-    },
-
-    {
-        text: "    [SYS_CHECK_02] ............... OK",
-        delay: 5000,
-        beep: true
-    },
-
-    {
-        text: "    [SYS_CHECK_03] ............... OK",
-        delay: 3500,
-        beep: true
-    },
-
-
-    {
-        text: "",
-        delay: 1500
-    },
-
-
-    /* FINALIZATION */
-
-    {
-        text: "Diagnostics complete.",
-        delay: 3000
-    },
-
-    {
-        text: "All systems nominal.",
-        delay: 3500
-    },
-
-    {
-        text: "",
-        delay: 2000
-    },
-
-    {
-        text: "WELCOME_SURVEY LOADING: FINISHED",
-        delay: 3000,
-        beep: true
-    },
-
-    {
-        text: "",
-        delay: 1500
-    },
-
-    {
-        text: "BEGIN?",
-        delay: 2000
-    },
-
-    {
-        text: "Y/N",
-        delay: 500
+    if (inputLocked) {
+        return;
     }
 
+    const key = event.key.toLowerCase();
+
+
+    /* =====================================
+       Y = BEGIN
+       ===================================== */
+
+    if (key === "y") {
+
+        inputLocked = true;
+
+        answer.textContent = "Y";
+
+        cursor.style.display = "none";
+
+        setTimeout(() => {
+            beginSurvey();
+        }, 500);
+    }
+
+
+    /* =====================================
+       N = DON'T BEGIN
+       ===================================== */
+
+    else if (key === "n") {
+
+        inputLocked = true;
+
+        answer.textContent = "N";
+
+        cursor.style.display = "none";
+
+        setTimeout(() => {
+            noResponse();
+        }, 500);
+    }
+
+});
+
+
+/* =========================================
+   BEGIN SURVEY
+   ========================================= */
+
+function beginSurvey() {
+
+    /*
+        The audio starts HERE.
+
+        Since this function was triggered by
+        the user's Y key press, the browser
+        should allow the audio to play.
+    */
+
+    startupAudio.currentTime = 0;
+
+    startupAudio.play().catch(error => {
+        console.log("Audio could not start:", error);
+    });
+
+
+    /* Hide boot */
+
+    boot.style.display = "none";
+
+
+    /* Show loading */
+
+    loading.style.display = "block";
+
+
+    /* Begin loading sequence */
+
+    runLoadingSequence();
+}
+
+
+/* =========================================
+   LOADING SEQUENCE
+   ========================================= */
+
+const loadingMessages = [
+    "INITIALIZING WELCOME_SURVEY...",
+    "LOADING SYSTEM...",
+    "CHECKING MEMORY...",
+    "CONNECTING...",
+    "ESTABLISHING USER SESSION...",
+    "LOADING SURVEY DATA...",
+    "PLEASE WAIT..."
 ];
 
 
-/* =========================================
-   WAIT FUNCTION
-   ========================================= */
+function runLoadingSequence() {
 
-function wait(ms) {
-
-    return new Promise(resolve => {
-
-        setTimeout(resolve, ms);
-
-    });
-
-}
+    let index = 0;
 
 
-/* =========================================
-   TYPING SOUND
-   ========================================= */
+    function nextMessage() {
 
-async function typeLine(text) {
+        if (index >= loadingMessages.length) {
 
-    /*
-        Start typing sound.
-    */
+            setTimeout(() => {
 
-    typingSound.currentTime = 0;
+                loading.style.display = "none";
 
-    typingSound.volume = 0.35;
+                survey.style.display = "block";
 
-    typingSound.play().catch(() => {});
+                startSurvey();
 
+            }, 800);
 
-    /*
-        Type the text one character
-        at a time.
-    */
-
-    for (let character of text) {
-
-        terminal.textContent += character;
-
-        await wait(18);
-
-    }
-
-
-    /*
-        Stop typing sound.
-    */
-
-    typingSound.pause();
-
-    typingSound.currentTime = 0;
-
-
-    terminal.textContent += "\n";
-
-}
-
-
-/* =========================================
-   BEEP
-   ========================================= */
-
-function playBeep() {
-
-    beepSound.currentTime = 0;
-
-    beepSound.volume = 0.55;
-
-    beepSound.play().catch(() => {});
-
-}
-
-
-/* =========================================
-   RUN BOOT SEQUENCE
-   ========================================= */
-
-async function runBootSequence() {
-
-    for (let line of bootSequence) {
-
-        await wait(line.delay);
-
-        await typeLine(line.text);
-
-
-        /*
-            Only play the beep when
-            the line specifically
-            requests one.
-        */
-
-        if (line.beep) {
-
-            playBeep();
-
+            return;
         }
 
+
+        loading.textContent +=
+            loadingMessages[index] + "\n";
+
+        index++;
+
+
+        setTimeout(nextMessage, 500);
     }
 
 
-    showInput();
-
+    nextMessage();
 }
 
 
 /* =========================================
-   SHOW Y/N INPUT
+   MAIN SURVEY
    ========================================= */
 
-function showInput() {
+function startSurvey() {
 
-    inputLine.style.display = "block";
+    survey.innerHTML = `
+WELCOME_SURVEY
 
-    terminal.appendChild(inputLine);
+--------------------------------
 
-    userInput.focus();
+CONNECTION ESTABLISHED.
 
-    userInput.addEventListener(
-        "keydown",
-        handleInput
-    );
+WELCOME, USER.
 
+YOUR PARTICIPATION IS REQUIRED.
+
+--------------------------------
+`;
+
+    /*
+        The rest of the survey will go here.
+    */
 }
 
 
 /* =========================================
-   HANDLE Y/N
+   N RESPONSE
    ========================================= */
 
-async function handleInput(event) {
+function noResponse() {
 
-    if (event.key !== "Enter") {
+    boot.innerHTML = `
+WELCOME_SURVEY
 
-        return;
+BEGIN?
 
-    }
+N
 
-
-    const answer =
-        userInput.value.toUpperCase();
-
-
-    /* =========================
-       YES
-       ========================= */
-
-    if (answer === "Y") {
-
-        userInput.disabled = true;
-
-        terminal.textContent +=
-            "\n> Y\n\n";
-
-        terminal.textContent +=
-            "WELCOME_SURVEY INITIALIZING...\n";
-
-        /*
-            ACTUAL SURVEY WILL GO HERE.
-        */
-
-    }
+...
+`;
 
 
-    /* =========================
-       NO
-       ========================= */
+    setTimeout(() => {
 
-    else if (answer === "N") {
+        boot.innerHTML +=
+            "THAT IS NOT AN ACCEPTABLE RESPONSE.";
 
-        userInput.disabled = true;
-
-        terminal.textContent +=
-            "\n> N\n\n";
-
-
-        await wait(1000);
-
-
-        terminal.textContent +=
-            "ABORTING WELCOME_SURVEY...\n";
-
-
-        await wait(1500);
-
-
-        terminal.textContent +=
-            "ERROR.\n";
-
-
-        await wait(1000);
-
-
-        errorPopup.style.display = "block";
-
-    }
-
-
-    /* =========================
-       INVALID INPUT
-       ========================= */
-
-    else {
-
-        userInput.value = "";
-
-    }
-
+    }, 1500);
 }
-
-
-/* =========================================
-   INITIAL BEGIN BUTTON
-   ========================================= */
-
-startButton.addEventListener(
-    "click",
-    async function() {
-
-        /*
-            Hide initial screen.
-        */
-
-        startScreen.style.display = "none";
-
-
-        /*
-            Show terminal.
-        */
-
-        terminalScreen.style.display = "block";
-
-
-        /*
-            Start background ambience.
-
-            Because this happens as a
-            direct result of the player's
-            click, browsers should allow it.
-        */
-
-        ambienceSound.volume = 0.15;
-
-        ambienceSound.play().catch(() => {});
-
-
-        /*
-            Begin the boot sequence.
-        */
-
-        runBootSequence();
-
-    }
-);
