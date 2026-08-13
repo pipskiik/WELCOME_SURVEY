@@ -11,22 +11,43 @@
 
 <body>
 
-    <div id="terminal"></div>
-
-    <div id="input-line">
-        <span>></span>
-        <input
-            type="text"
-            id="user-input"
-            maxlength="1"
-            autocomplete="off"
-            autofocus
-        >
+    <!-- Initial screen -->
+    <div id="start-screen">
+        <div id="start-title">WELCOME SURVEY</div>
+        <button id="start-button">BEGIN</button>
     </div>
 
+
+    <!-- Terminal -->
+    <div id="terminal-screen">
+
+        <div id="terminal"></div>
+
+        <div id="input-line">
+            <span>></span>
+            <input
+                type="text"
+                id="user-input"
+                maxlength="1"
+                autocomplete="off"
+                autofocus
+            >
+        </div>
+
+    </div>
+
+
+    <!-- Error popup -->
     <div id="error-popup">
         YOU NEVER HAD A CHOICE TO BEGIN WITH.
     </div>
+
+
+    <!-- Audio -->
+    <audio id="typing-sound" src="sounds/typing.mp3"></audio>
+    <audio id="ambience-sound" src="sounds/ambience.mp3" loop></audio>
+    <audio id="beep-sound" src="sounds/beep.mp3"></audio>
+
 
     <script src="script.js"></script>
 
